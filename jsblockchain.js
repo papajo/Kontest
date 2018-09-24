@@ -15,3 +15,14 @@ class Block {
 
     }
 }
+
+class BlockChain {
+    constructor(){
+        //first element of the array - genesis block
+        this.chain = [this.createGenesisBlock()];
+
+    }
+    createGenesisBlock(){
+        return new Block(0,"09/24/2018","genesis block","0");
+    }
+}
