@@ -1,10 +1,17 @@
 const SHA256 = require('crypto-js/sha256');
 
+class Transaction {
+    constructor(fromAddress, toAddress, amount){
+        this.fromAddress = fromAddress;
+        this.toAddress = toAddress;
+        this.amount = amount;
+    }
+}
+
 class Block {
-    constructor (index, timestamp, data, previousHash = ''){
-        this.index = index;
+    constructor (timestamp, transactions, previousHash = ''){
         this.timestamp = timestamp;
-        this.data = data;
+        this.transactions = transactions;
         this.previousHash = previousHash;
         this.hash = this.calculateHash();
         this.nonce = 0;
@@ -12,7 +19,7 @@ class Block {
 
     calculateHash() {
         //using SHA256
-        return SHA256(this.index+this.timestamp+this.previousHash+JSON.stringify(this.data)+this.nonce).toString();
+        return SHA256(this.timestamp+this.previousHash+JSON.stringify(this.transactions)+this.nonce).toString();
     }
     mineNewBlock(difficulty){
         while(this.hash.substring(0, difficulty) !== Array(difficulty + 1).join(0)){
@@ -27,22 +34,35 @@ class BlockChain {
     constructor(){
         //first element of the array - genesis block
         this.chain = [this.createGenesisBlock()];
-        this.difficulty = 3;
+        this.difficulty = 2;
+        this.pendingTransactions = [];
+        this.miningReward = 10;
     }
     createGenesisBlock(){
-        return new Block(0,"09/24/2018","genesis block","0");
+        return new Block("09/24/2018","genesis block","0");
     }
 
     getLatestBlock(){
         return this.chain[this.chain.length - 1];
     }
-
+/* Replaced with minePendingTransactions()
     addBlock(newBlock){
         newBlock.previousHash = this.getLatestBlock().hash;
         //newBlock.hash = newBlock.calculateHash(); function replaces as below
         newBlock.mineNewBlock(this.difficulty);
         this.chain.push(newBlock);
     }
+*/
+minePendingTransactions(miningRewardAddress){
+    let block = new Block(Date.now(), this.pendingTransactions, this.getLatestBlock().hash);
+    block.mineNewBlock(this.difficulty);
+    console.log("Block mined successfully");
+    this.chain.push(block);
+    this.pendingTransactions = [
+        new Transaction(null, miningRewardAddress, this.miningReward)
+    ];  
+
+}
 
     checkBlockChainIsValid(){
         for(let i=1; i < this.chain.length; i++){
