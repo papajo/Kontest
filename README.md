@@ -2,4 +2,4 @@
 
 ## ethereum stack plus javascript flavor
 
-###Simple voting system
+### Simple voting system
