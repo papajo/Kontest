@@ -20,7 +20,6 @@ App = {
 
     return App.initContract();
   },
-
   
   initContract: function() {
     $.getJSON("Kontest.json", function(kontest) {
@@ -29,8 +28,24 @@ App = {
       // Connect provider to interact with contract
       App.contracts.Kontest.setProvider(App.web3Provider);
 
-    //App.listenForEvents();  
+    //App.listenForEvents(); 
+    App.listenForEvents();
+
     return App.render();
+    });
+  },
+
+  // Listen for events emitted from the contract
+  listenForEvents: function() {
+    App.contracts.Kontest.deployed().then(function(instance) {
+      instance.votedEvent({}, {
+        fromBlock: 0,
+        toBlock: 'latest'
+      }).watch(function(error, event) {
+        console.log("event triggered", event)
+        // Reload when a new vote is recorded
+        App.render();
+      });
     });
   },
 

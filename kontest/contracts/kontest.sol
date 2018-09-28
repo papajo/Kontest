@@ -18,6 +18,10 @@ contract Kontest {
 	//keep track of kontestants count 
 	uint public kontestantsCount;
 
+	event votedEvent(
+		uint indexed _kontestantId
+	);
+
 	function Kontest () public {
 		addKontenstant("Tom");
 		addKontenstant("Jerry");
@@ -35,8 +39,12 @@ contract Kontest {
 
 		//increment the voters vote count 
 		kontestants[_kontestantId].voteCount++ ;
+
 		//set the voters voted status to true
 		voters[msg.sender] = true;
+		
+		//trigger the votedEvent
+		votedEvent(_kontestantId);
 
 	}
 }
