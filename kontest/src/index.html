@@ -38,11 +38,17 @@
           <th scope="col">Votes</th>
         </thead>
         <tbody id="contestantsResults">
-          
         </tbody>
         <hr/>
         <p id="accountAddress" class="text-center"></p>
       </table>
+      <form onSubmit="App.castVote(); return false;">
+        <div class="form-group">
+          <label for="contestantsSelect">Select Kontestant</label>
+          <select class="select-control" id="contestantsSelect"></select>
+        </div>
+        <button type="submit" class="btn btn-primary">Cast Your Vote</button>
+      </form>
     </div>
     </div>
 

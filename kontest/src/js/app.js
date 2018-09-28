@@ -57,8 +57,8 @@ App = {
       var kontestantsResults = $("#contestantsResults");
       kontestantsResults.empty();
 
-      //var kontestantsSelect = $('#contestantsSelect');
-      //kontestantsSelect.empty();
+      var kontestantsSelect = $('#contestantsSelect');
+      kontestantsSelect.empty();
 
       for (var i = 1; i <= kontestantsCount; i++) {
         kontestInstance.kontestants(i).then(function(kontestant) {
@@ -71,8 +71,8 @@ App = {
           kontestantsResults.append(kontestantTemplate);
 
           // Render candidate voting option
-          //var kontestantOption = "<option value='" + id + "' >" + name + "</ option>"
-          //kontestantsSelect.append(kontestantOption);
+          var kontestantOption = "<option value='" + id + "' >" + name + "</ option>"
+          kontestantsSelect.append(kontestantOption);
 
         });
       }
@@ -82,7 +82,21 @@ App = {
       console.warn(error);
     });
   },
-}
+
+  castVote: function() {
+    var kontestantId = $('#contestantsSelect').val();
+    App.contracts.Kontest.deployed().then(function(instance) {
+      return instance.vote(kontestantId, { from: App.account });
+    }).then(function(result) {
+      // Wait for votes to update
+      $("#content").hide();
+      $("#loader").show();
+    }).catch(function(err) {
+      console.error(err);
+    });
+  }
+};
+
 $(function() {
   $(window).load(function() {
     App.init();
